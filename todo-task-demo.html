@@ -12,7 +12,7 @@
         function loadTask(){
             let content = `<ul class="list-group">`;
             for(let eachTask of allTasks){
-                content += `<li class="list-group-item" onclick="deleteTask('Laundry')">${eachTask}</li>`;
+                content += `<li class="list-group-item" onclick="deleteTask('${eachTask}')">${eachTask}</li>`;
             }
             content+=`</ul>`;
             document.getElementById("show").innerHTML = content;
