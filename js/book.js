@@ -1,4 +1,5 @@
 let toggleForm = true;
+let toggleEditForm = true;
 
 let allBooks = [
     {
@@ -67,7 +68,7 @@ function loadAllBooks(){
         content += `<td><img src="${eachBook.bookImageUrl}" width="80" height="50"></td>`;
         content += `<td>${eachBook.bookTitle}</td>`;
         content += `<td><button type="button" class="btn btn-warning" onclick="loadABook('${eachBook.bookId}')">VIEW</button></td>`;
-        content += `<td><button type="button" class="btn btn-primary">EDIT</button></td>`;
+        content += `<td><button type="button" class="btn btn-primary" onclick="showEditBookForm('${eachBook.bookId}')">EDIT</button></td>`;
         content += `<td><button type="button" class="btn btn-danger" onclick="deleteBook('${eachBook.bookId}')">REMOVE</button></td>`;
         content += `</tr>`;
     });
@@ -113,13 +114,13 @@ function closeView(){
     document.getElementById("view").innerHTML = "";
 }
 
-function showBookForm(){
+function showAddBookForm(){
     let content = ``;
 
     let authorContent = ``;
     allAuthors.forEach((eachAuthor) => {
         authorContent += `<option value='${eachAuthor.authorId}'>${eachAuthor.authorId} - ${eachAuthor.authorLastName}, ${eachAuthor.authorFirstName}</option>`;
-    });
+    }); 
 
     if(toggleForm){
         content = `
@@ -167,7 +168,7 @@ function showBookForm(){
                                 </div>
                             </div>
                             <div class="card-footer bg-success text-light">
-                                <button type="button" class="btn btn-light text-success">ADD</button>
+                                <button type="button" class="btn btn-light text-success" onclick="addBook()">ADD</button>
                                 <button type="reset" class="btn btn-light text-success mx-5">CLEAR</button>
                             </div>
                         </form>
@@ -184,12 +185,100 @@ function showBookForm(){
 }
 
 function addBook(){
-
+    let formData = {
+        bookId: allBooks[allBooks.length-1].bookId + 1,
+        bookTitle: document.getElementById("bTitle").value,
+        bookPrice: document.getElementById("bPrice").value,
+        bookGenre: document.getElementById("bGenre").value,
+        bookPublished: document.getElementById("bPublished").value,
+        bookDescription: document.getElementById("bDescription").value,
+        bookImageUrl: document.getElementById("bImage").value,
+        bookAuthor: {
+            authorId: document.getElementById("bAuthor").value
+        }
+    }
+    allBooks.push(formData);
+    showAddBookForm();
+    loadAllBooks();
 }
 
 function deleteBook(bookId){
     allBooks = allBooks.filter((eachBook) => eachBook.bookId!=bookId);
     loadAllBooks();
+}
+
+function showEditBookForm(bookId){
+    let content = ``;
+
+    let aBook = allBooks.filter((eachBook) => eachBook.bookId==bookId);
+
+    let authorContent = ``;
+    allAuthors.forEach((eachAuthor) => {
+        authorContent += `<option value='${eachAuthor.authorId}' ${aBook[0].bookAuthor.authorId==eachAuthor.authorId?'selected':''}>
+                            ${eachAuthor.authorId} - ${eachAuthor.authorLastName}, ${eachAuthor.authorFirstName}
+                         </option>`;
+    }); 
+
+    if(toggleEditForm){
+        content = `
+        <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <div class="card">
+                        <form>
+                            <div class="card-header bg-primary text-light"><h3>EDIT A BOOK</h3></div>
+                            <div class="card-body">
+                                <div class="form-control-group">
+                                    <label for="bTitle">Book Title:</label>
+                                    <input type="text" id="bTitle" class="form-control" value="${aBook[0].bookTitle}">
+                                </div>
+                                <div class="form-control-group">
+                                    <label for="bPrice">Book Price:</label>
+                                    <input type="text" id="bPrice" class="form-control" value="${aBook[0].bookPrice}">
+                                </div>
+                                <div class="form-control-group">
+                                    <label for="bGenre">Book Genre:</label>
+                                    <select id="bGenre" class="form-control">
+                                        <option>--select--</option>
+                                        <option value="Commedy" ${aBook[0].bookGenre == 'Commedy'?'selected':''} >Commedy</option>
+                                        <option value="Fantasy" ${aBook[0].bookGenre == 'Fantasy'?'selected':''}>Fantasy</option>
+                                    </select>
+                                </div>
+                                <div class="form-control-group">
+                                    <label for="bPublished">Book Published:</label>
+                                    <input type="date" id="bPublished" class="form-control" value="${aBook[0].bookPublished}"> 
+                                </div>
+                                <div class="form-control-group">
+                                    <label for="bDescription">Book Description:</label>
+                                    <textarea id="bDescription" class="form-control">${aBook[0].bookDescription}</textarea>
+                                </div>
+                                <div class="form-control-group">
+                                    <label for="bImage">Book Image Url:</label>
+                                    <input type="text" id="bImage" class="form-control" value="${aBook[0].bookImageUrl}">
+                                </div>
+                                <div class="form-control-group">
+                                    <label for="bAuthor">Book Author:</label>
+                                    <select id="bAuthor" class="form-control">
+                                        <option>--select--</option>
+                                        ${authorContent}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-primary text-light">
+                                <button type="button" class="btn btn-light text-primary" onclick="editBook()">UPDATE</button>
+                                <button type="reset" class="btn btn-light text-primary mx-5">CLEAR</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-3"></div>
+            </div>
+        `;
+    } else {
+        content = ``;
+    }
+    toggleEditForm = !toggleEditForm;
+    document.getElementById("edit-form").innerHTML = content;
 }
 
 function updateBook(){
