@@ -115,6 +115,12 @@ function closeView(){
 
 function showBookForm(){
     let content = ``;
+
+    let authorContent = ``;
+    allAuthors.forEach((eachAuthor) => {
+        authorContent += `<option value='${eachAuthor.authorId}'>${eachAuthor.authorId} - ${eachAuthor.authorLastName}, ${eachAuthor.authorFirstName}</option>`;
+    });
+
     if(toggleForm){
         content = `
         <div class="row">
@@ -156,6 +162,7 @@ function showBookForm(){
                                     <label for="bAuthor">Book Author:</label>
                                     <select id="bAuthor" class="form-control">
                                         <option>--select--</option>
+                                        ${authorContent}
                                     </select>
                                 </div>
                             </div>
