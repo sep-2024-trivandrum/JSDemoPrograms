@@ -119,7 +119,9 @@ function showAddBookForm(){
 
     let authorContent = ``;
     allAuthors.forEach((eachAuthor) => {
-        authorContent += `<option value='${eachAuthor.authorId}'>${eachAuthor.authorId} - ${eachAuthor.authorLastName}, ${eachAuthor.authorFirstName}</option>`;
+        authorContent += `<option value='${eachAuthor.authorId}'>
+                                ${eachAuthor.authorId} - ${eachAuthor.authorLastName}, ${eachAuthor.authorFirstName}
+                          </option>`;
     }); 
 
     if(toggleForm){
@@ -228,6 +230,7 @@ function showEditBookForm(bookId){
                         <form>
                             <div class="card-header bg-primary text-light"><h3>EDIT A BOOK</h3></div>
                             <div class="card-body">
+                                <div><h5>Book ID: ${aBook[0].bookId}</h5></div>
                                 <div class="form-control-group">
                                     <label for="bTitle">Book Title:</label>
                                     <input type="text" id="bTitle" class="form-control" value="${aBook[0].bookTitle}">
@@ -265,7 +268,7 @@ function showEditBookForm(bookId){
                                 </div>
                             </div>
                             <div class="card-footer bg-primary text-light">
-                                <button type="button" class="btn btn-light text-primary" onclick="editBook()">UPDATE</button>
+                                <button type="button" class="btn btn-light text-primary" onclick="updateBook(${aBook[0].bookId})">UPDATE</button>
                                 <button type="reset" class="btn btn-light text-primary mx-5">CLEAR</button>
                             </div>
                         </form>
@@ -281,10 +284,27 @@ function showEditBookForm(bookId){
     document.getElementById("edit-form").innerHTML = content;
 }
 
-function updateBook(){
+function updateBook(bId){
+    let formData = {
+        bookId: bId,
+        bookTitle: document.getElementById("bTitle").value,
+        bookPrice: document.getElementById("bPrice").value,
+        bookGenre: document.getElementById("bGenre").value,
+        bookPublished: document.getElementById("bPublished").value,
+        bookDescription: document.getElementById("bDescription").value,
+        bookImageUrl: document.getElementById("bImage").value,
+        bookAuthor: {
+            authorId: document.getElementById("bAuthor").value
+        }
+    }
+    console.log(formData);
+    for(let i=0;i<allBooks.length;i++){
+        if(allBooks[i].bookId == bId){
+            allBooks[i] = formData;
+            break;
+        }
+    }
 
-}
-
-function loadAllAuthors(){
-
+    showEditBookForm(bId);
+    loadAllBooks();
 }
